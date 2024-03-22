@@ -1,4 +1,3 @@
-import MotorType from 'src/interface/MotorType';
 import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 @Entity()

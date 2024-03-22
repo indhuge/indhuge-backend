@@ -1,5 +1,6 @@
+import { Device } from "src/device/entities/device.entity";
 
-interface IDeviceMessage {
-    id : String;
+export interface IDeviceMessage {
+    device : Device;
     type : String;
 }

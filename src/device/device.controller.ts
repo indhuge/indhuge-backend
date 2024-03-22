@@ -17,15 +17,15 @@ export class DeviceController {
     return this.deviceService.findAll();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.deviceService.findOne(+id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.deviceService.findOne(id);
+  }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateDeviceDto: UpdateDeviceDto) {
-  //   return this.deviceService.update(+id, updateDeviceDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateDeviceDto: UpdateDeviceDto) {
+    return this.deviceService.update(id, updateDeviceDto);
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

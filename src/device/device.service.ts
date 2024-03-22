@@ -18,16 +18,16 @@ export class DeviceService {
   }
 
   findAll() {
-    return `This action returns all device`;
+    return this.deviceRepository.find();
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} device`;
-  // }
+  findOne(id: string) {
+    return this.deviceRepository.findOne({where : {id}});
+  }
 
-  // update(id: number, updateDeviceDto: UpdateDeviceDto) {
-  //   return `This action updates a #${id} device`;
-  // }
+  update(id: string, updateDeviceDto: UpdateDeviceDto) {
+    return this.deviceRepository.update(id, updateDeviceDto);
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} device`;
