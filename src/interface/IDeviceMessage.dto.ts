@@ -1,4 +1,6 @@
+import { MetricTypeDef } from "./MetricTypeDef";
+
 export interface IDeviceMessage {
   device_id: string;
-  type: String;
+  type: string;
 }

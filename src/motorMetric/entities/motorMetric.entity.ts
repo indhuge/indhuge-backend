@@ -1,5 +1,6 @@
 import { Device } from "src/device/entities/device.entity";
 import { IDeviceMessage } from "src/interface/IDeviceMessage";
+import { MetricTypeDef } from "src/interface/MetricTypeDef";
 import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 
@@ -13,7 +14,7 @@ export class MotorMetric implements IDeviceMessage {
   device: Device;
   
   @Column()
-  type: 'motor';
+  type : string = MetricTypeDef.motor;
 
   @Column()
   temperature: number;

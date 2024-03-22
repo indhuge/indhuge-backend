@@ -6,7 +6,7 @@ export class Device {
   id: String;
 
   @Column()
-  type: 'motor' | 'silo';
+  type: string;
 
   @Column()
   description: String;
