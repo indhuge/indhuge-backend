@@ -27,6 +27,7 @@ export class MotorMetricService {
 
     const mm : MotorMetric = {
       id : null,
+      timestamp : createMetricDto.timestamp ?? Date(),
       ...createMetricDto,
       device : dv
     }
@@ -34,19 +35,19 @@ export class MotorMetricService {
     return this.motorRepository.insert(mm);
   }
 
-  // findAll() {
-  //   return `This action returns all metric`;
-  // }
+  findOne(id : number) {
+    return this.motorRepository.findOne({where : {id}})
+  }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} metric`;
-  // }
 
-  // update(id: number, updateMetricDto: UpdateMetricDto) {
-  //   return `This action updates a #${id} metric`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} metric`;
-  // }
+  async getActualMetricAvg(deviceId : string) {
+    const  o = await this.motorRepository.createQueryBuilder('m')
+      .select(['AVG(m.temperature) AS temperature', 'AVG(m.rpm) AS rpm'])
+      .where('device_id = :deviceId', {deviceId})
+      .getRawOne()
+    return {
+      type : 'motor',
+      ...o,
+    }
+  }
 }

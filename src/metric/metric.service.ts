@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
 import { MetricTypeDef } from 'src/interface/MetricTypeDef';
 import { CreateMotorMetricDTO } from 'src/motorMetric/dto/createMotorMetric.dto';
@@ -22,6 +22,15 @@ export class MetricService {
     }
 
     return null;
+  }
+
+  getActualAvg(device_id : string, type : string) {
+    switch(type) {
+      case MetricTypeDef.motor:
+        return this.motorMetricService.getActualMetricAvg(device_id)
+      default:
+        throw new HttpException('Invalid device type', HttpStatus.BAD_REQUEST)
+    }
   }
 
   findAll() {
