@@ -7,6 +7,7 @@ import { Device } from './device/entities/device.entity';
 import { MotorMetricModule } from './motorMetric/motorMetric.module';
 import { MotorMetric } from './motorMetric/entities/motorMetric.entity';
 import { MetricModule } from './metric/metric.module';
+import { InfluxModule } from './influx/influx.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MetricModule } from './metric/metric.module';
     DeviceModule,
     MotorMetricModule,
     MetricModule,
+    InfluxModule,
   ],
   controllers: [AppController],
   providers: [AppService],
