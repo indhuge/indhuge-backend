@@ -3,6 +3,7 @@ import { InfluxDB, Point } from '@influxdata/influxdb-client';
 // import { InfluxDB } from 'influx';
 import { write } from 'fs';
 import { Observable, Observer, of } from 'rxjs';
+import { IQueryConfig } from './dto/IQueryConfig.dto';
 
 @Injectable()
 export class InfluxService {
@@ -29,6 +30,15 @@ export class InfluxService {
       return obj;
     }
 
+    static GroupBy(propName : string, objects : any[]){
+      let obj = {}
+      const targetValue = new Set(objects.map((e) => e[propName]))
+      targetValue.forEach((k) => {
+        obj[k] = InfluxService.Union(objects.filter((e) => e[propName] == k))
+      })
+      return obj
+    }
+
     runTest() {
         
         let writeclient = this.client.getWriteApi(this.org, this.bucket, 'ns')
@@ -36,8 +46,8 @@ export class InfluxService {
         {
             setTimeout(() => {
 
-                let point = new Point('motor_b')
-                    .tag('device', 'device_a')
+                let point = new Point('motor_a')
+                    .tag('type', 'device_metric')
                     .intField('rpm', i * 50)
                     .intField('temperature', i * 150)
                 writeclient.writePoint(point)
@@ -50,12 +60,14 @@ export class InfluxService {
 
     async runQuery(device_id : string, config : IQueryConfig) {
       let fluxQuery = `from(bucket: "indhuge-poc")
-  |> range(start: ${config.range.start}, stop:${config.range.stop == 'now' ? config.range.stop + "()" : config.range.stop})
-  |> mean()
-  |> filter(fn: (r) => r["_measurement"] == "${device_id}")
+  |> range(start: ${config.range.start}, stop:${config.range.stop == 'now' ? config.range.stop + '()' : config.range.stop})
   ${
-    config.filter?.map((e) => `|> filter(fn: (r) => r["${e.key}"] == "${e.value}")\n`) ?? ""
-  }
+    config.filter?.map(
+      (e) => `|> filter(fn: (r) => r["${e.key}"] == "${e.value}")\n`,
+      ) ?? ''
+    }
+    ${config.group ? `|> group(columns: ["${config.group.map((e) => `"${e}",`)}"])\n` : ""}
+    |> mean()
   `;
       const data = await this.client.getQueryApi(this.org).collectRows(
         fluxQuery
@@ -63,9 +75,11 @@ export class InfluxService {
       const procData = data.map((e) => {
         const o = e as any
         return {
+          _measurement : o._measurement,
           [o._field] : o._value
         }
       })
-      return InfluxService.Union(procData);
+      let processed = config.postGroupBy ? InfluxService.GroupBy(config.postGroupBy, procData) : null;
+      return processed ?? procData
     }
 }
