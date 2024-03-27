@@ -8,6 +8,8 @@ import { MotorMetricModule } from './motorMetric/motorMetric.module';
 import { MotorMetric } from './motorMetric/entities/motorMetric.entity';
 import { MetricModule } from './metric/metric.module';
 import { InfluxModule } from './influx/influx.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SchedulerModule } from './scheduler/scheduler.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { InfluxModule } from './influx/influx.module';
     MotorMetricModule,
     MetricModule,
     InfluxModule,
+    ScheduleModule.forRoot(),
+    SchedulerModule
   ],
   controllers: [AppController],
   providers: [AppService],
