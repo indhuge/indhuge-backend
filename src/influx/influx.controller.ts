@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Sse } from '@nestjs/common';
+import { Controller, Get, Param, Post, Sse } from '@nestjs/common';
 import { InfluxService } from './influx.service';
 import { Observable, defer } from 'rxjs';
 
@@ -11,12 +11,9 @@ export class InfluxController {
     return this.service.runTest();
   }
 
-  @Get('/query')
-  execQuery() {
-    return this.service.runQueryRaw();
-  }
-  @Get('/query1')
-  execQuery_() {
-    return this.service.runQuery();
+  // TODO: Create a interface for filter function
+  @Get('/query/:device_id')
+  execQuery(@Param('device_id') device_id : string) {
+    return this.service.runQuery(device_id, {range : {start : 0, stop : 'now'}});
   }
 }

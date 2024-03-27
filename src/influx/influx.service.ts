@@ -18,6 +18,17 @@ export class InfluxService {
         this.client = new InfluxDB({url, token})
     }
 
+    static Union(objects : any[]) {
+      let obj = {}
+      console.log(objects)
+      objects.forEach((e) => {
+        Object.keys(e).forEach((i) => {
+          obj[i] = e[i]
+        })
+      })
+      return obj;
+    }
+
     runTest() {
         
         let writeclient = this.client.getWriteApi(this.org, this.bucket, 'ns')
@@ -37,48 +48,24 @@ export class InfluxService {
         
     }
 
-    async runQueryRaw() {
+    async runQuery(device_id : string, config : IQueryConfig) {
       let fluxQuery = `from(bucket: "indhuge-poc")
-  |> range(start: 0)
+  |> range(start: ${config.range.start}, stop:${config.range.stop == 'now' ? config.range.stop + "()" : config.range.stop})
   |> mean()
-  |> filter(fn: (r) => r["_measurement"] == "motor_a")`;
+  |> filter(fn: (r) => r["_measurement"] == "${device_id}")
+  ${
+    config.filter?.map((e) => `|> filter(fn: (r) => r["${e.key}"] == "${e.value}")\n`) ?? ""
+  }
+  `;
       const data = await this.client.getQueryApi(this.org).collectRows(
-        fluxQuery, //, you can also specify a row mapper as a second argument
+        fluxQuery
       );
-      return data
+      const procData = data.map((e) => {
+        const o = e as any
+        return {
+          [o._field] : o._value
+        }
+      })
+      return InfluxService.Union(procData);
     }
-
-    runQuery() : Observable<any> {
-
-        let queryClient = this.client.getQueryApi(this.org)
-        let fluxQuery = `from(bucket: "indhuge-poc")
-  |> range(start: 0)
-  |> mean()
-  |> filter(fn: (r) => r["_measurement"] == "motor_a")`;
-
-        this.client
-        
-        
-        const _arr : any[] = [];
-
-        queryClient.queryRows(fluxQuery, {
-          next: (row, tableMeta) => {
-            const tableObject = tableMeta.toObject(row);
-            _arr.push(tableObject);
-            console.log(tableObject);
-          },
-          error: (error) => {
-            console.error('\nError', error);
-          },
-          complete: () => {
-            console.log('\nSuccess');
-          },
-        });
-
-        return of(_arr);
-    }
-
-
-
-
 }
