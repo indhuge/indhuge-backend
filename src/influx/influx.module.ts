@@ -5,6 +5,7 @@ import { InfluxController } from './influx.controller';
 @Module({
  
   providers: [InfluxService],
-  controllers: [InfluxController]
+  controllers: [InfluxController],
+  exports : [InfluxService]
 })
 export class InfluxModule {}

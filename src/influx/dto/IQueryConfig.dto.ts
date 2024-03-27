@@ -14,7 +14,7 @@ export const filterByDeviceId = (deviceId : string) => {
 
 export const filterGetAllMetrics = () => {
     return {
-      key: 'type',
+      key: 'data_type',
       value: 'device_metric',
     };
 }

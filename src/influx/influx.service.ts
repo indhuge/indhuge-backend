@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InfluxDB, Point } from '@influxdata/influxdb-client';
 // import { InfluxDB } from 'influx';
 import { write } from 'fs';
-import { Observable, Observer, of } from 'rxjs';
+import { Observable, Observer, of, timestamp } from 'rxjs';
 import { IQueryConfig } from './dto/IQueryConfig.dto';
 
 @Injectable()
@@ -21,7 +21,6 @@ export class InfluxService {
 
     static Union(objects : any[]) {
       let obj = {}
-      console.log(objects)
       objects.forEach((e) => {
         Object.keys(e).forEach((i) => {
           obj[i] = e[i]
@@ -47,7 +46,8 @@ export class InfluxService {
             setTimeout(() => {
 
                 let point = new Point('motor_a')
-                    .tag('type', 'device_metric')
+                    .tag('data_type', 'device_metric')
+                    .tag('type', 'motor')
                     .intField('rpm', i * 50)
                     .intField('temperature', i * 150)
                 writeclient.writePoint(point)
@@ -58,7 +58,7 @@ export class InfluxService {
         
     }
 
-    async runQuery(device_id : string, config : IQueryConfig) {
+    async runQuery(config : IQueryConfig) {
       let fluxQuery = `from(bucket: "indhuge-poc")
   |> range(start: ${config.range.start}, stop:${config.range.stop == 'now' ? config.range.stop + '()' : config.range.stop})
   ${
@@ -75,8 +75,9 @@ export class InfluxService {
       const procData = data.map((e) => {
         const o = e as any
         return {
-          _measurement : o._measurement,
-          [o._field] : o._value
+          device_id : o._measurement,
+          [o._field] : o._value,
+          timestamp : o._stop
         }
       })
       let processed = config.postGroupBy ? InfluxService.GroupBy(config.postGroupBy, procData) : null;

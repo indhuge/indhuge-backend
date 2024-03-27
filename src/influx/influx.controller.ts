@@ -13,12 +13,12 @@ export class InfluxController {j
   }
 
   // TODO: Create a interface for filter function
-  @Get('/query/:device_id')
-  execQuery(@Param('device_id') device_id : string) {
-    return this.service.runQuery(device_id, {
+  @Get('/query')
+  execQuery() {
+    return this.service.runQuery({
       range: { start: 0, stop: 'now' },
       filter: [filterGetAllMetrics()],
-      postGroupBy: '_measurement',
+      postGroupBy: 'device_id',
     });
   }
 }
