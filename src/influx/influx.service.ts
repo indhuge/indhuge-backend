@@ -3,10 +3,19 @@ import { InfluxDB, Point } from '@influxdata/influxdb-client';
 // import { InfluxDB } from 'influx';
 import { write } from 'fs';
 import { Observable, Observer, of, timestamp } from 'rxjs';
-import { IQueryConfig } from './dto/IQueryConfig.dto';
+import { IQueryConfig, filterGetAllMetrics } from './dto/IQueryConfig.dto';
 
 @Injectable()
 export class InfluxService {
+
+    static GET_ALL_DEVICES_AND_GROUP : IQueryConfig = {
+      range : {
+        start : 0,
+        stop : "now"
+      },
+      filter : [filterGetAllMetrics()],
+      postGroupBy : "device_id"
+    }
 
     private client : InfluxDB
     org = 'indhuge'
@@ -36,6 +45,15 @@ export class InfluxService {
         obj[k] = InfluxService.Union(objects.filter((e) => e[propName] == k))
       })
       return obj
+    }
+
+    static GroupByAsList(propName : string, objects : any[]){
+      let obj = [];
+      const targetValue = new Set(objects.map((e) => e[propName]));
+      targetValue.forEach((k) => {
+        obj.push(InfluxService.Union(objects.filter((e) => e[propName] == k)));
+      });
+      return obj;
     }
 
     runTest() {
@@ -77,10 +95,11 @@ export class InfluxService {
         return {
           device_id : o._measurement,
           [o._field] : o._value,
-          timestamp : o._stop
+          timestamp : o._stop,
+          type: o.type
         }
       })
-      let processed = config.postGroupBy ? InfluxService.GroupBy(config.postGroupBy, procData) : null;
+      let processed = config.postGroupBy ? InfluxService.GroupByAsList(config.postGroupBy, procData) : null;
       return processed ?? procData
     }
 }

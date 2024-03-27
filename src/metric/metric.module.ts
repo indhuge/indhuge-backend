@@ -7,5 +7,6 @@ import { MotorMetricModule } from 'src/motorMetric/motorMetric.module';
   imports: [MotorMetricModule],
   controllers: [MetricController],
   providers: [MetricService],
+  exports: [MetricService]
 })
 export class MetricModule {}
