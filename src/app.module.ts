@@ -10,6 +10,7 @@ import { MetricModule } from './metric/metric.module';
 import { InfluxModule } from './influx/influx.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { SchedulerModule } from './scheduler/scheduler.module';
     MetricModule,
     InfluxModule,
     ScheduleModule.forRoot(),
-    SchedulerModule
+    SchedulerModule,
+    ConfigModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService],
