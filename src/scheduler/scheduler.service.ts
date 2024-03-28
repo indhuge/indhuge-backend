@@ -17,7 +17,7 @@ export class SchedulerService {
     ){}
 
 
-    @Cron(CronExpression.EVERY_MINUTE)
+    //@Cron(CronExpression.EVERY_MINUTE)
     async importData(){
         console.time("Importing data")
         let config = InfluxService.GET_ALL_DEVICES_AND_GROUP

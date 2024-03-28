@@ -13,6 +13,11 @@ export class MetricController {
     return this.metricService.create(createMetricDto);
   }
 
+  @Post('/aws')
+  create_aws(@Body() data : any) {
+    return data;
+  }
+
   @Get('/:type/:device_id')
   getMetricAvg(@Param('type') type : string, @Param('device_id') device_id : string) {
     return this.metricService.getActualAvg(device_id, type)
