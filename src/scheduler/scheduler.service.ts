@@ -24,7 +24,7 @@ export class SchedulerService {
         if(this.numberOfReads != 0)
             config.range.start = '-1m'
         const data = (await this.influxService.runQuery(config)) as CreateMotorMetricDTO[]
-        data.forEach((e) => this.metricService.create(e))
+        this.metricService.createAll(data);
         console.timeEnd('Importing data');
     }
 
