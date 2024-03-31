@@ -11,6 +11,7 @@ import { InfluxModule } from './influx/influx.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { ConfigModule } from '@nestjs/config';
+import { MqttModule } from './mqtt/mqtt.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { ConfigModule } from '@nestjs/config';
     InfluxModule,
     ScheduleModule.forRoot(),
     SchedulerModule,
-    ConfigModule.forRoot()
+    ConfigModule.forRoot(),
+    MqttModule
   ],
   controllers: [AppController],
   providers: [AppService],

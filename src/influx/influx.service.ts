@@ -4,6 +4,7 @@ import { InfluxDB, Point } from '@influxdata/influxdb-client';
 import { write } from 'fs';
 import { Observable, Observer, of, timestamp } from 'rxjs';
 import { IQueryConfig, filterGetAllMetrics } from './dto/IQueryConfig.dto';
+import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
 
 @Injectable()
 export class InfluxService {
@@ -74,6 +75,10 @@ export class InfluxService {
             
         }
         
+    }
+
+    insert(data : IDeviceMessage) {
+      console.log(data);
     }
 
     async runQuery(config : IQueryConfig) {
