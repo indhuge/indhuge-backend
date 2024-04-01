@@ -6,26 +6,24 @@ import { CreateMotorMetricDTO } from 'src/motorMetric/dto/createMotorMetric.dto'
 
 @Injectable()
 export class SchedulerService {
+  numberOfReads: number = 0;
 
-    numberOfReads : number = 0
+  constructor(
+    @Inject(InfluxService)
+    private influxService: InfluxService,
+    @Inject(MetricService)
+    private metricService: MetricService,
+  ) {}
 
-    constructor(
-        @Inject(InfluxService)
-        private influxService : InfluxService,
-        @Inject(MetricService)
-        private metricService : MetricService
-    ){}
-
-
-    //@Cron(CronExpression.EVERY_MINUTE)
-    async importData(){
-        console.time("Importing data")
-        let config = InfluxService.GET_ALL_DEVICES_AND_GROUP
-        if(this.numberOfReads != 0)
-            config.range.start = '-1m'
-        const data = (await this.influxService.runQuery(config)) as CreateMotorMetricDTO[]
-        this.metricService.createAll(data);
-        console.timeEnd('Importing data');
-    }
-
+  @Cron(CronExpression.EVERY_5_SECONDS)
+  async importData() {
+    console.time('Importing data');
+    let config = InfluxService.GET_ALL_DEVICES_AND_GROUP;
+    if (this.numberOfReads != 0) config.range.start = '-1m';
+    const data = (await this.influxService.runQuery(
+      config,
+    )) as CreateMotorMetricDTO[];
+    this.metricService.createAll(data);
+    console.timeEnd('Importing data');
+  }
 }

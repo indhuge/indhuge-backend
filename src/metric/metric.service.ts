@@ -64,6 +64,15 @@ export class MetricService {
     }
   }
 
+  async getActualAvgAll() {
+    // motors
+    const motors = this.motorMetricService.getActualMetricAvgAll();
+
+    return {
+      motors: await motors
+    }
+  }
+
   findAll() {
     return `This action returns all metric`;
   }

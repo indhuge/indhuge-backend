@@ -78,7 +78,16 @@ export class InfluxService {
     }
 
     insert(data : IDeviceMessage) {
-      console.log(data);
+      let writeclient = this.client.getWriteApi(this.org, this.bucket, 'ms')
+      let point = new Point(data.device_id)
+        .tag('data_type', 'device_metric')
+        .tag('type', data.type);
+      Object.keys(data).forEach((e) => {
+        if(e == 'type' || e == 'device_id') return
+        point.floatField(e, data[e])
+      })
+      writeclient.writePoint(point);
+      writeclient.flush();
     }
 
     async runQuery(config : IQueryConfig) {

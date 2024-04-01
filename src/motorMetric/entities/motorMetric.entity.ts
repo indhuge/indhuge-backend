@@ -6,25 +6,23 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedC
 
 @Entity()
 export class MotorMetric implements IDeviceMessage {
-  
   @PrimaryGeneratedColumn()
   id: number;
-  
+
   //@Column({name : 'device_id'})
-  @ManyToOne(type => Device, device => device.id)
-  @JoinColumn({name : 'device_id'})
+  @ManyToOne((type) => Device, (device) => device.id)
+  @JoinColumn({ name: 'device_id' })
   device: Device;
-  
+
   @Column()
-  type : string = MetricTypeDef.motor;
-  
+  type: string = MetricTypeDef.motor;
+
   @Column()
   timestamp: Date;
-  
-  @Column()
+
+  @Column({ type: 'float' })
   temperature: number;
-  
-  @Column()
+
+  @Column({ type: 'float' })
   rpm: number;
-  
 }

@@ -9,65 +9,75 @@ import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class MotorMetricService {
-
   constructor(
     @InjectRepository(MotorMetric)
-    private motorRepository : Repository<MotorMetric>,
+    private motorRepository: Repository<MotorMetric>,
     @Inject(DeviceService)
-    private readonly deviceService : DeviceService
-    
-  ){}
+    private readonly deviceService: DeviceService,
+  ) {}
 
   async create(createMetricDto: CreateMotorMetricDTO) {
-
     const dv = await this.deviceService.findOne(createMetricDto.device_id);
-    if(dv == null){
-      throw new HttpException("Invalid device_id", HttpStatus.BAD_REQUEST);
+    if (dv == null) {
+      throw new HttpException('Invalid device_id', HttpStatus.BAD_REQUEST);
     }
 
-    const mm : MotorMetric = {
-      id : null,
-      timestamp : createMetricDto.timestamp ?? Date(),
+    const mm: MotorMetric = {
+      id: null,
+      timestamp: createMetricDto.timestamp ?? Date(),
       ...createMetricDto,
-      device : dv
-    }
+      device: dv,
+    };
 
     return this.motorRepository.insert(mm);
   }
 
-  async createAll(createMetricDtos : CreateMotorMetricDTO[]) {
-    const dvs = (await this.deviceService.findAll());
-    const dvs_ids = dvs.map((e) => e.id)
+  async createAll(createMetricDtos: CreateMotorMetricDTO[]) {
+    const dvs = await this.deviceService.findAll();
+    const dvs_ids = dvs.map((e) => e.id);
     createMetricDtos.forEach((e) => {
-      if(dvs_ids.indexOf(e.device_id) == -1)
+      if (dvs_ids.indexOf(e.device_id) == -1)
         throw new HttpException('Invalid device_id', HttpStatus.BAD_REQUEST);
-    })
+    });
 
-    const mms : MotorMetric[] = createMetricDtos.map((e) => {
+    const mms: MotorMetric[] = createMetricDtos.map((e) => {
       return {
-        id : null,
-        timestamp : e.timestamp ?? Date(),
+        id: null,
+        timestamp: e.timestamp ?? Date(),
         ...e,
-        device : dvs.filter((d) => d.id == e.device_id)[0]
-      }
-    })
+        device: dvs.filter((d) => d.id == e.device_id)[0],
+      };
+    });
 
     return this.motorRepository.insert(mms);
   }
 
-  findOne(id : number) {
-    return this.motorRepository.findOne({where : {id}})
+  findOne(id: number) {
+    return this.motorRepository.findOne({ where: { id } });
   }
 
-
-  async getActualMetricAvg(deviceId : string) {
-    const  o = await this.motorRepository.createQueryBuilder('m')
+  async getActualMetricAvg(deviceId: string) {
+    const o = await this.motorRepository
+      .createQueryBuilder('m')
       .select(['AVG(m.temperature) AS temperature', 'AVG(m.rpm) AS rpm'])
-      .where('device_id = :deviceId', {deviceId})
-      .getRawOne()
+      .where('device_id = :deviceId', { deviceId })
+      .getRawOne();
     return {
-      type : 'motor',
+      type: 'motor',
       ...o,
-    }
+    };
+  }
+
+  async getActualMetricAvgAll() {
+    const o = await this.motorRepository
+      .createQueryBuilder('m')
+      .select([
+        'AVG(m.temperature) AS temperature',
+        'AVG(m.rpm) AS rpm',
+        'device_id',
+      ])
+      .groupBy('device_id')
+      .getRawMany();
+    return o;
   }
 }

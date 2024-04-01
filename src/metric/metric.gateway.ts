@@ -11,8 +11,8 @@ export class MetricGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.metricService.removeListener(client);
   }
   
-  handleConnection(client: Socket, ...args: any[]) {
-    client.emit('message', {data : 'OK'})
+  async handleConnection(client: Socket, ...args: any[]) {
+    client.emit('message', await this.metricService.getActualAvgAll())
     this.metricService.addListener(client)
   }
   
