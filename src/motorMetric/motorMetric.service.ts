@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeviceService } from 'src/device/device.service';
 import { MetricTypeDef } from 'src/interface/MetricTypeDef';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
 
 @Injectable()
 export class MotorMetricService {
@@ -78,6 +79,6 @@ export class MotorMetricService {
       ])
       .groupBy('device_id')
       .getRawMany();
-    return o;
+    return o as IDeviceMessage[];
   }
 }

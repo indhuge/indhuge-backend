@@ -23,6 +23,7 @@ export class SchedulerService {
     const data = (await this.influxService.runQuery(
       config,
     )) as CreateMotorMetricDTO[];
+    // console.log(data);
     this.metricService.createAll(data);
     console.timeEnd('Importing data');
   }
