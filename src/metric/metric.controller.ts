@@ -23,6 +23,11 @@ export class MetricController {
     return this.metricService.getActualAvg(device_id, type)
   }
 
+  @Get('/get-all')
+  async getAllMetricAvg() {
+    return await this.metricService.getActualAvgAll()
+  }
+
   // @Get()
   // findAll() {
   //   return this.metricService.findAll();

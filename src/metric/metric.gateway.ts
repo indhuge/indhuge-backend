@@ -2,7 +2,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect,
 import { Socket } from 'dgram';
 import { MetricService } from './metric.service';
 
-@WebSocketGateway()
+@WebSocketGateway({cors : true})
 export class MetricGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private metricService : MetricService){}

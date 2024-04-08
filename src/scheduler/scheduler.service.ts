@@ -15,7 +15,7 @@ export class SchedulerService {
     private metricService: MetricService,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron('*/2 * * * * *')
   async importData() {
     console.time('Importing data');
     let config = InfluxService.GET_ALL_DEVICES_AND_GROUP;

@@ -36,10 +36,17 @@ export class MotorMetricService {
   async createAll(createMetricDtos: CreateMotorMetricDTO[]) {
     const dvs = await this.deviceService.findAll();
     const dvs_ids = dvs.map((e) => e.id);
-    createMetricDtos.forEach((e) => {
-      if (dvs_ids.indexOf(e.device_id) == -1)
-        throw new HttpException('Invalid device_id', HttpStatus.BAD_REQUEST);
+    const invalidMetricIndex : number[] = [];
+    createMetricDtos.forEach((e, i) => {
+      if (dvs_ids.indexOf(e.device_id) == -1){
+        // throw new HttpException(`Invalid device_id ${e.device_id}`, HttpStatus.BAD_REQUEST);
+        console.log(`Invalid device_id ${e.device_id}: ignoring object`);
+        invalidMetricIndex.push(i);
+      }
     });
+    invalidMetricIndex.forEach((e) => {
+      createMetricDtos = createMetricDtos.slice(e, 0);
+    })
 
     const mms: MotorMetric[] = createMetricDtos.map((e) => {
       return {
@@ -73,12 +80,13 @@ export class MotorMetricService {
     const o = await this.motorRepository
       .createQueryBuilder('m')
       .select([
-        'AVG(m.temperature) AS temperature',
+        'ROUND(AVG(m.temperature)::numeric, 3) AS temperature',
         'AVG(m.rpm) AS rpm',
         'device_id',
       ])
       .groupBy('device_id')
       .getRawMany();
+    
     return o as IDeviceMessage[];
   }
 }
