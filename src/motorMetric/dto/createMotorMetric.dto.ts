@@ -5,5 +5,7 @@ export class CreateMotorMetricDTO implements IDeviceMessage {
   type: 'motor';
   temperature: number;
   rpm: number;
+  //alignment : number;
+  vibration : number;
   timestamp : Date;
 }

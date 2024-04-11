@@ -44,9 +44,9 @@ export class MotorMetricService {
         invalidMetricIndex.push(i);
       }
     });
-    invalidMetricIndex.forEach((e) => {
-      createMetricDtos = createMetricDtos.slice(e, 0);
-    })
+    // invalidMetricIndex.forEach((e) => {
+    //   createMetricDtos = createMetricDtos.slice(e, 1);
+    // })
 
     const mms: MotorMetric[] = createMetricDtos.map((e) => {
       return {
