@@ -28,4 +28,5 @@ export class MotorMetric implements IDeviceMessage {
 
   @Column({type : 'float'})
   vibration: number;
+
 }

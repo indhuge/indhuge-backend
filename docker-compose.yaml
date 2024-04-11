@@ -6,8 +6,8 @@ services:
     ports:
       - '8086:8086'
     volumes:
-      - influxdb2-data:/var/lib/influxdb2
-      - influxdb2-config:/etc/influxdb2
+      - ./data/influx_data:/var/lib/influxdb2
+      - ./data/influx_config:/etc/influxdb2
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=indhuge
@@ -21,11 +21,5 @@ services:
       - '5432:5432'
     environment:
       - POSTGRES_PASSWORD=admin
-  mosquitto:
-    image: eclipse-mosquitto
-    container_name: mosquitto
-    ports:
-      - '1883:1883'
-volumes:
-  influxdb2-data:
-  influxdb2-config:
+    volumes:
+      - ./data/posgres:/var/lib/postgresql/data
