@@ -20,13 +20,12 @@ export class MotorMetric implements IDeviceMessage {
   @Column()
   timestamp: Date;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'float', default: 0 })
   temperature: number;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'float', default: 0 })
   rpm: number;
 
-  @Column({type : 'float'})
+  @Column({ type: 'float', default: 0 })
   vibration: number;
-
 }

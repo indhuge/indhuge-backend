@@ -8,13 +8,13 @@ async function bootstrap() {
   const app = (
     await NestFactory.create(AppModule)
   );
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.MQTT,
-    options: {
-      url: process.env.MQTT_URL ?? 'mqtt://localhost:1883',
-    },
-  });
-  await app.startAllMicroservices();
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.MQTT,
+  //   options: {
+  //     url: process.env.MQTT_URL ?? 'mqtt://localhost:1883',
+  //   },
+  // });
+  // await app.startAllMicroservices();
   await app.listen(3001);
 
 

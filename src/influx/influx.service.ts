@@ -82,6 +82,7 @@ export class InfluxService {
     });
     writeclient.writePoint(point);
     writeclient.flush();
+    return point;
   }
 
   async runQuery(config: IQueryConfig) {

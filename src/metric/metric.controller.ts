@@ -3,29 +3,37 @@ import { MetricService } from './metric.service';
 import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
 import { MotorMetric } from 'src/motorMetric/entities/motorMetric.entity';
 import { MotorMetricService } from 'src/motorMetric/motorMetric.service';
+import { InfluxService } from 'src/influx/influx.service';
 
 @Controller('metric')
 export class MetricController {
-  constructor(private readonly metricService: MetricService) {}
+  constructor(
+    private readonly metricService: MetricService,
+    private readonly influxService: InfluxService,
+  ) {}
+
 
   @Post()
-  create(@Body() createMetricDto: IDeviceMessage) {
-    return this.metricService.create(createMetricDto);
+  create(@Body() createMetricDtos: IDeviceMessage[]) {
+    return createMetricDtos.map((e) => this.influxService.insert(e));
   }
 
   @Post('/aws')
-  create_aws(@Body() data : any) {
+  create_aws(@Body() data: any) {
     return data;
   }
 
   @Get('/:type/:device_id')
-  getMetricAvg(@Param('type') type : string, @Param('device_id') device_id : string) {
-    return this.metricService.getActualAvg(device_id, type)
+  getMetricAvg(
+    @Param('type') type: string,
+    @Param('device_id') device_id: string,
+  ) {
+    return this.metricService.getActualAvg(device_id, type);
   }
 
   @Get('/get-all')
   async getAllMetricAvg() {
-    return await this.metricService.getActualAvgAll()
+    return await this.metricService.getActualAvgAll();
   }
 
   // @Get()
