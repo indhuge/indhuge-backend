@@ -70,7 +70,7 @@ export class InfluxService {
     }
   }
 
-  insert(data: IDeviceMessage) {
+  private _insert(data: IDeviceMessage) {
     let writeclient = this.client.getWriteApi(this.org, this.bucket, 'ms');
     let point = new Point(data.device_id)
       .tag('data_type', 'device_metric')
@@ -84,6 +84,14 @@ export class InfluxService {
     return point;
   }
 
+  insert(data: IDeviceMessage | Array<IDeviceMessage>) {
+    if (data instanceof Array) {
+      return data.map((e) => this._insert(e));
+    }
+
+    return this._insert(data);
+  }
+
   async runQuery(config: IQueryConfig) {
     let fluxQuery = `from(bucket: "indhuge-poc")
   |> range(start: ${config.range.start}, stop:${config.range.stop == 'now' ? config.range.stop + '()' : config.range.stop})
@@ -95,8 +103,7 @@ export class InfluxService {
     ${config.group ? `|> group(columns: ["${config.group.map((e) => `"${e}",`)}"])\n` : ''}
     |> mean()
   `;
-    const data = await this.client.getQueryApi(this.org)
-      .collectRows(fluxQuery);
+    const data = await this.client.getQueryApi(this.org).collectRows(fluxQuery);
     const procData = data.map((e) => {
       const o = e as any;
       return {

@@ -14,8 +14,8 @@ export class MetricController {
 
 
   @Post()
-  create(@Body() createMetricDtos: IDeviceMessage[]) {
-    return createMetricDtos.map((e) => this.influxService.insert(e));
+  create(@Body() createMetricDtos: IDeviceMessage) {
+    return this.influxService.insert(createMetricDtos);
   }
 
   @Post('/aws')
