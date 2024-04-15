@@ -28,7 +28,7 @@ import { InitModule } from './init/init.module';
         username: config.get('POSTGRES_USERNAME'),
         password: config.get('POSTGRES_PASSWORD'),
         database: config.get('POSTGRES_DATABASE'),
-        entities: [__dirname + '/**/*.entity.ts'],
+        entities: [Device, MotorMetric],
         synchronize: true,
       })
     }),
