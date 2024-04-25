@@ -13,7 +13,9 @@ services:
       - DOCKER_INFLUXDB_INIT_USERNAME=indhuge
       - DOCKER_INFLUXDB_INIT_PASSWORD=indhuge123
       - DOCKER_INFLUXDB_INIT_ORG=indhuge
-      - DOCKER_INFLUXDB_INIT_BUCKET=indehuge-poc
+      - DOCKER_INFLUXDB_INIT_BUCKET=indhuge-poc
+      - DOCKER_INFLUXDB_INIT_RETENTION=6h
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=d1FdUgVhWgouX0FmyBSWTZ2gX81GTIBwuZAAaiILIRCbTMW21YEy7v0iEa0dWeiW
   postgres:
     image: postgres
     container_name: postgres
@@ -21,5 +23,15 @@ services:
       - '5432:5432'
     environment:
       - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=indhuge
     volumes:
       - ./data/posgres:/var/lib/postgresql/data
+  nest:
+    build: .
+    image: indhuge-nest
+    ports:
+      - "3001:3001"
+    depends_on:
+      - influxdb
+      - postgres
+      
