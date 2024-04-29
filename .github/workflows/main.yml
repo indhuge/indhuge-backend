@@ -13,6 +13,9 @@ jobs:
       run: |
         aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    - name: Verify connection
+      run: |
+        aws ec2 describe-instances --no-cli-pager
     - name: Connect to EC2
       run: |
         aws ec2-instance-connect ssh --instance-id i-0bac15dda9bca290f --os-user ubuntu
