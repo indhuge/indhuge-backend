@@ -1,0 +1,25 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy_on_ec2:
+    name: Deploy on EC2
+    runs-on: ubuntu-latest
+    env:
+      PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+    steps:
+    - name: Configure AWS
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set default.region us-east-2
+    - name: Verify connection
+      run: |
+        aws ec2 describe-instances --no-cli-pager
+    - name: Connect to EC2
+      run: |
+        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+        ssh -o StrictHostKeyChecking=no -i private_key ubuntu@${EC2_PUBLIC_IP} '
+          mkdir test
+          echo "Hello from GH Actions" >> test/gh.txt'
