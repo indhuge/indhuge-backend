@@ -27,10 +27,10 @@ services:
     volumes:
       - ./data/posgres:/var/lib/postgresql/data
   nest:
-    build: .
     image: entityblackhawk/indhuge-nest:latest
     ports:
-      - '3001:3001'
+      - "3001:3001"
     depends_on:
       - influxdb
       - postgres
+      
