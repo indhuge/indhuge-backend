@@ -1,0 +1,20 @@
+on:
+  push:
+    branches:
+    - main
+  workflow_dispatch:
+
+jobs:
+  deploy_on_ec2:
+    name: Deploy on EC2
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install AWS CLI
+      run: |
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      unzip awscliv2.zip
+      sudo ./aws/install
+
+    - name: Configure AWS
+      run: |
+      aws configure
