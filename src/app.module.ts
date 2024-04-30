@@ -15,11 +15,14 @@ import { MqttModule } from './mqtt/mqtt.module';
 import { InvalidConfigurationException } from './interface/InvalidConfigurationException';
 import { InitModule } from './init/init.module';
 import { AlertModule } from './alert/alert.module';
+import { Alert } from './alert/entities/alert.entity';
 
 @Module({
   imports: [
     InitModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: ['./.env.local', './.env']
+    }),
     TypeOrmModule.forRootAsync({
       imports:[ConfigModule],
       inject: [ConfigService],
@@ -29,7 +32,7 @@ import { AlertModule } from './alert/alert.module';
         username: config.get('POSTGRES_USERNAME'),
         password: config.get('POSTGRES_PASSWORD'),
         database: config.get('POSTGRES_DATABASE'),
-        entities: [Device, MotorMetric],
+        entities: [Device, MotorMetric, Alert],
         synchronize: true,
       })
     }),

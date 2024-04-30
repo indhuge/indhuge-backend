@@ -23,17 +23,22 @@ export class MetricController {
     return data;
   }
 
-  @Get('/:type/:device_id')
-  getMetricAvg(
-    @Param('type') type: string,
-    @Param('device_id') device_id: string,
-  ) {
-    return this.metricService.getActualAvg(device_id, type);
-  }
+  // @Get('/:type/:device_id')
+  // getMetricAvg(
+  //   @Param('type') type: string,
+  //   @Param('device_id') device_id: string,
+  // ) {
+  //   return this.metricService.getActualAvg(device_id, type);
+  // }
 
   @Get('/get-all')
   async getAllMetricAvg() {
     return await this.metricService.getActualAvgAll();
+  }
+
+  @Get('/:type/:device_id')
+  async getOne(@Param('type') type : string, @Param('device_id') device_id : string) {
+    return await this.metricService.findOne(type, device_id);
   }
 
   // @Get()

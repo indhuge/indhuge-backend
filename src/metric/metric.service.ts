@@ -81,8 +81,11 @@ export class MetricService {
     return `This action returns all metric`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} metric`;
+  findOne(type: string, device_id: string) {
+    if(type == 'motor') {
+      return this.motorMetricService.findByDeviceId(device_id);
+    }
+    return null;
   }
 
   update(id: number, updateMetricDto: any) {

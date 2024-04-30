@@ -64,6 +64,10 @@ export class MotorMetricService {
     return this.motorRepository.findOne({ where: { id } });
   }
 
+  findByDeviceId(device_id : string) {
+    return this.motorRepository.find({relations : {device : true}, where : {device : {id : device_id}}})
+  }
+
   async getActualMetricAvg(deviceId: string) {
     const o = await this.motorRepository
       .createQueryBuilder('m')
