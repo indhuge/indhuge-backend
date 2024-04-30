@@ -14,6 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MqttModule } from './mqtt/mqtt.module';
 import { InvalidConfigurationException } from './interface/InvalidConfigurationException';
 import { InitModule } from './init/init.module';
+import { AlertModule } from './alert/alert.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { InitModule } from './init/init.module';
     ScheduleModule.forRoot(),
     SchedulerModule,
     MqttModule,
+    AlertModule,
   ],
   controllers: [AppController],
   providers: [AppService],
