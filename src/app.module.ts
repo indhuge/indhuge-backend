@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DeviceModule } from './device/device.module';
 import { Device } from './device/entities/device.entity';
@@ -45,7 +43,5 @@ import { Alert } from './alert/entities/alert.entity';
     MqttModule,
     AlertModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

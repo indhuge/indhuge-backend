@@ -1,6 +1,12 @@
-export class CreateDeviceDto {
+import { ApiProperty } from '@nestjs/swagger';
 
-  id: String;
+export class CreateDeviceDto {
+  @ApiProperty()
+  id: string;
+  @ApiProperty({
+    enum: ['motor', 'silo'],
+  })
   type: 'motor' | 'silo';
-  description: String;
+  @ApiProperty()
+  description: string;
 }

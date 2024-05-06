@@ -1,13 +1,17 @@
 import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Device {
   @PrimaryColumn()
-  id: String;
+  @ApiProperty()
+  id: string;
 
   @Column()
+  @ApiProperty()
   type: string;
 
   @Column()
-  description: String;
+  @ApiProperty()
+  description: string;
 }

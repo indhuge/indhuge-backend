@@ -1,7 +1,11 @@
-import { MetricTypeDef } from "./MetricTypeDef";
+import { MetricTypeDef } from './MetricTypeDef';
+import { ApiProperty } from '@nestjs/swagger';
 
-export interface IDeviceMessage {
+export class IDeviceMessage {
+  @ApiProperty()
   device_id: string;
+  @ApiProperty()
   type: string;
-  timestamp? : Date;
+  @ApiProperty()
+  timestamp?: Date;
 }

@@ -1,4 +1,4 @@
-export interface IQueryConfig {
+export class IQueryConfig {
     range : {start : number | string, stop : number | 'now'}
     filter? : {key : string, value : number | string}[]
     group? : string[]

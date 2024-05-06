@@ -7,10 +7,10 @@ import { filterByDeviceId, filterGetAllMetrics } from './dto/IQueryConfig.dto';
 export class InfluxController {j
   constructor(private service: InfluxService) {}
 
-  @Get()
-  execTest() {
-    return this.service.runTest();
-  }
+  // @Get()
+  // execTest() {
+  //   return this.service.runTest();
+  // }
 
   // TODO: Create a interface for filter function
   @Get('/query')

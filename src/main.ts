@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { NestMicroserviceOptions } from '@nestjs/common/interfaces/microservices/nest-microservice-options.interface';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { MqttModule } from './mqtt/mqtt.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = (
@@ -15,6 +16,18 @@ async function bootstrap() {
   //   },
   // });
   // await app.startAllMicroservices();
+
+  const config = new DocumentBuilder()
+    .setTitle('Ind[huge]')
+    .setDescription('Ind[huge] data processing API')
+    .setVersion('1.0')
+    .addTag('Metric', 'Manage device metrics')
+    .addTag('Device', 'Manage devices')
+    .addTag('Alert', 'Manage alerts')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   await app.listen(3001);
 
 

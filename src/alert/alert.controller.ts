@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AlertService } from './alert.service';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { UpdateAlertDto } from './dto/update-alert.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Alert')
 @Controller('alert')
 export class AlertController {
   constructor(private readonly alertService: AlertService) {}
@@ -11,7 +13,7 @@ export class AlertController {
   // sendAlert(){
   //   return this.alertService.sendEmail();
   // }
-
+  
   @Post()
   create(@Body() createAlertDto: CreateAlertDto) {
     return this.alertService.create(createAlertDto);
