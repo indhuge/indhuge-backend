@@ -7,7 +7,7 @@ export class Alert {
     @PrimaryGeneratedColumn()
     id : number;
 
-    @OneToOne(type => Device, (device) => device.id)
+    @ManyToOne(type => Device, (device) => device.id)
     @JoinColumn({name : 'device_id'})
     device: Device;
 

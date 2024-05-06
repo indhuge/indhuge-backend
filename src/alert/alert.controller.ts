@@ -7,10 +7,10 @@ import { UpdateAlertDto } from './dto/update-alert.dto';
 export class AlertController {
   constructor(private readonly alertService: AlertService) {}
 
-  @Post("/send")
-  sendAlert(){
-    return this.alertService.sendEmail();
-  }
+  // @Post("/send")
+  // sendAlert(){
+  //   return this.alertService.sendEmail();
+  // }
 
   @Post()
   create(@Body() createAlertDto: CreateAlertDto) {

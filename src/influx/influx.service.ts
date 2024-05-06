@@ -5,6 +5,7 @@ import { write } from 'fs';
 import { Observable, Observer, of, timestamp } from 'rxjs';
 import { IQueryConfig, filterGetAllMetrics } from './dto/IQueryConfig.dto';
 import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
+import { Tools } from 'src/tools';
 
 @Injectable()
 export class InfluxService {
@@ -27,33 +28,6 @@ export class InfluxService {
     this.client = new InfluxDB({ url, token });
   }
 
-  static Union(objects: any[]) {
-    let obj = {};
-    objects.forEach((e) => {
-      Object.keys(e).forEach((i) => {
-        obj[i] = e[i];
-      });
-    });
-    return obj;
-  }
-
-  static GroupBy(propName: string, objects: any[]) {
-    let obj = {};
-    const targetValue = new Set(objects.map((e) => e[propName]));
-    targetValue.forEach((k) => {
-      obj[k] = InfluxService.Union(objects.filter((e) => e[propName] == k));
-    });
-    return obj;
-  }
-
-  static GroupByAsList(propName: string, objects: any[]) {
-    let obj = [];
-    const targetValue = new Set(objects.map((e) => e[propName]));
-    targetValue.forEach((k) => {
-      obj.push(InfluxService.Union(objects.filter((e) => e[propName] == k)));
-    });
-    return obj;
-  }
 
   runTest() {
     let writeclient = this.client.getWriteApi(this.org, this.bucket, 'ns');
@@ -114,7 +88,7 @@ export class InfluxService {
       };
     });
     let processed = config.postGroupBy
-      ? InfluxService.GroupByAsList(config.postGroupBy, procData)
+      ? Tools.GroupByAsList(config.postGroupBy, procData)
       : null;
     return processed ?? procData;
   }

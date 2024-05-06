@@ -28,12 +28,12 @@ export class AlertService {
     });
   }
 
-  async sendEmail() {
+  async sendEmail(dest: string, subject: string, text: string) {
     const result = await this.transporter.sendMail({
       from: this.configService.get('ALERT_EMAIL'),
-      to: 'luanf2003@gmail.com',
-      subject: 'Alert test',
-      text: 'ALERT',
+      to: dest,
+      subject: subject,
+      text: text,
     });
 
     return result;

@@ -7,6 +7,9 @@ import { MetricTypeDef } from 'src/interface/MetricTypeDef';
 import { CreateMotorMetricDTO } from 'src/motorMetric/dto/createMotorMetric.dto';
 import { MotorMetric } from 'src/motorMetric/entities/motorMetric.entity';
 import { MotorMetricService } from 'src/motorMetric/motorMetric.service';
+import { AlertService } from 'src/alert/alert.service';
+import { Tools } from 'src/tools';
+import { InfluxService } from 'src/influx/influx.service';
 
 @Injectable()
 export class MetricService {
@@ -15,6 +18,10 @@ export class MetricService {
   constructor(
     @Inject(MotorMetricService)
     private motorMetricService: MotorMetricService,
+    @Inject(AlertService)
+    private alertService: AlertService,
+    @Inject(InfluxService)
+    private influxService: InfluxService
   ) {}
 
   create(data: IDeviceMessage) {
@@ -75,6 +82,29 @@ export class MetricService {
      };
 
     return response;
+  }
+
+
+  async insert(data : Array<IDeviceMessage>) {
+    
+    const messages : string[] = [];
+    const alers = await this.alertService.findAll();
+
+    alers.forEach((a) => {
+      const device = data.find((d) => d.device_id == a.target);
+      if(device) {
+        if(a.alert_value <= device[a.field as string]) {
+
+          const ms = "Alert on " + device.device_id + " : " + a.field + " with value " + device[a.field as string];
+          console.log(ms);
+          a.email.forEach((e) => {
+            this.alertService.sendEmail(e as string, "Ind[huge] alert", ms);
+          });
+        }
+      }
+    })
+
+    return this.influxService.insert(data);
   }
 
   findAll() {

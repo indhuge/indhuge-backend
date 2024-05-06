@@ -10,5 +10,6 @@ import { Alert } from './entities/alert.entity';
   imports: [ConfigModule, TypeOrmModule.forFeature([Alert]), DeviceModule],
   controllers: [AlertController],
   providers: [AlertService],
+  exports: [AlertService]
 })
 export class AlertModule {}
