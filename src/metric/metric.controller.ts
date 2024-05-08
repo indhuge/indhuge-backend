@@ -1,10 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { MetricService } from './metric.service';
 import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
 import { MotorMetric } from 'src/motorMetric/entities/motorMetric.entity';
-import { MotorMetricService } from 'src/motorMetric/motorMetric.service';
 import { InfluxService } from 'src/influx/influx.service';
-import {ApiBody, ApiResponse, ApiTags} from "@nestjs/swagger";
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IRequestResponse } from 'src/interface/IRequestResponse';
 
 @ApiTags('Metric')
@@ -15,9 +14,8 @@ export class MetricController {
     private readonly influxService: InfluxService,
   ) {}
 
-
   @Post()
-  @ApiBody({ type: Array<IDeviceMessage>})
+  @ApiBody({ type: Array<IDeviceMessage> })
   create(@Body() createMetricDtos: IDeviceMessage[]) {
     //return this.influxService.insert(createMetricDtos);
     return this.metricService.insert(createMetricDtos);
@@ -37,14 +35,25 @@ export class MetricController {
   // }
 
   @Get('/get-all')
-  @ApiResponse({ status: 200, description: 'Get all metrics', type : IRequestResponse})
+  @ApiResponse({
+    status: 200,
+    description: 'Get all metrics',
+    type: IRequestResponse,
+  })
   async getAllMetricAvg() {
     return await this.metricService.getActualAvgAll();
   }
 
   @Get('/:type/:device_id')
-  @ApiResponse({ status: 200, description: 'Get one metric', type : [MotorMetric]})
-  async getOne(@Param('type') type : string, @Param('device_id') device_id : string) {
+  @ApiResponse({
+    status: 200,
+    description: 'Get one metric',
+    type: [MotorMetric],
+  })
+  async getOne(
+    @Param('type') type: string,
+    @Param('device_id') device_id: string,
+  ) {
     return await this.metricService.findOne(type, device_id);
   }
 

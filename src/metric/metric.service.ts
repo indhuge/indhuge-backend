@@ -1,14 +1,11 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Socket } from 'dgram';
 import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
-import * as idm from 'src/interface/IDeviceMessage';
 import { IRequestResponse } from 'src/interface/IRequestResponse';
 import { MetricTypeDef } from 'src/interface/MetricTypeDef';
 import { CreateMotorMetricDTO } from 'src/motorMetric/dto/createMotorMetric.dto';
-import { MotorMetric } from 'src/motorMetric/entities/motorMetric.entity';
 import { MotorMetricService } from 'src/motorMetric/motorMetric.service';
 import { AlertService } from 'src/alert/alert.service';
-import { Tools } from 'src/tools';
 import { InfluxService } from 'src/influx/influx.service';
 
 @Injectable()
@@ -21,7 +18,7 @@ export class MetricService {
     @Inject(AlertService)
     private alertService: AlertService,
     @Inject(InfluxService)
-    private influxService: InfluxService
+    private influxService: InfluxService,
   ) {}
 
   create(data: IDeviceMessage) {
@@ -43,10 +40,9 @@ export class MetricService {
     }
 
     this.emmit({
-          timestamp : (new Date()).toISOString(),
-          items : data
-        }
-      );
+      timestamp: new Date().toISOString(),
+      items: data,
+    });
   }
 
   emmit(data: IRequestResponse) {
@@ -72,38 +68,42 @@ export class MetricService {
   }
 
   async getActualAvgAll(): Promise<IRequestResponse> {
-  
     // motors
     const motors = this.motorMetricService.getActualMetricAvgAll();
 
-     const response: IRequestResponse = {
-       timestamp: new Date().toISOString(),
-       items: (await motors)
-     };
+    const response: IRequestResponse = {
+      timestamp: new Date().toISOString(),
+      items: await motors,
+    };
 
     return response;
   }
 
-
-  async insert(data : Array<IDeviceMessage>) {
-    
-    const messages : string[] = [];
+  async insert(data: Array<IDeviceMessage>) {
     const alers = await this.alertService.findAll();
 
     alers.forEach((a) => {
       const device = data.find((d) => d.device_id == a.target);
-      if(device) {
-        if(a.alert_value <= device[a.field as string]) {
-
-          const ms = "Alert on " + device.device_id + " : " + a.field + " with value " + device[a.field as string];
+      if (device) {
+        if (a.alert_value <= device[a.field as string]) {
+          const ms =
+            'Alert on ' +
+            device.device_id +
+            ' : ' +
+            a.field +
+            ' with value ' +
+            device[a.field as string];
           console.log(ms);
           a.email.forEach((e) => {
-            this.alertService.sendEmail(e as string, "Ind[huge] alert", ms);
+            this.alertService.sendEmail(e as string, 'Ind[huge] alert', ms);
           });
         }
       }
-    })
-
+    });
+    this.emmit({
+      timestamp: new Date().toISOString(),
+      items: data,
+    });
     return this.influxService.insert(data);
   }
 
@@ -112,7 +112,7 @@ export class MetricService {
   }
 
   findOne(type: string, device_id: string) {
-    if(type == 'motor') {
+    if (type == 'motor') {
       return this.motorMetricService.findByDeviceId(device_id);
     }
     return null;
