@@ -24,7 +24,7 @@ jobs:
           docker-compose push
   deploy_hmg:
     name: Deploy on HMG
-    uses: ./.github/workflows/deploy_on_ec2.yml@main
+    uses: ./.github/workflows/deploy_on_ec2.yml
     needs:
       - build_deploy_image
     secrets: inherit
