@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-    - main
+    - hmg
   workflow_dispatch:
 jobs:
   build_deploy_image:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@hmg
 
       - name: Setup Docker credentials
         run: |
