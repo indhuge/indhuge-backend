@@ -15,10 +15,10 @@ export class SchedulerService {
     private metricService: MetricService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  //@Cron(CronExpression.EVERY_10_SECONDS)
   async importData() {
     console.time('Importing data');
-    let config = InfluxService.GET_ALL_DEVICES_AND_GROUP;
+    const config = InfluxService.GET_ALL_DEVICES_AND_GROUP;
     if (this.numberOfReads != 0) config.range.start = '-1m';
     const data = (await this.influxService.runQuery(
       config,
