@@ -10,7 +10,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MqttModule } from './mqtt/mqtt.module';
-import { InvalidConfigurationException } from './interface/InvalidConfigurationException';
 import { InitModule } from './init/init.module';
 import { AlertModule } from './alert/alert.module';
 import { Alert } from './alert/entities/alert.entity';
@@ -19,20 +18,20 @@ import { Alert } from './alert/entities/alert.entity';
   imports: [
     InitModule,
     ConfigModule.forRoot({
-      envFilePath: ['./.env.local', './.env']
+      envFilePath: ['./.env.local', './.env.prod', './.env'],
     }),
     TypeOrmModule.forRootAsync({
-      imports:[ConfigModule],
+      imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config : ConfigService) => ({
+      useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        host:  config.get('POSTGRES_HOST'),
-        username: config.get('POSTGRES_USERNAME'),
+        host: config.get('POSTGRES_HOST'),
+        username: config.get('POSTGRES_USER'),
         password: config.get('POSTGRES_PASSWORD'),
-        database: config.get('POSTGRES_DATABASE'),
+        database: config.get('POSTGRES_DB'),
         entities: [Device, MotorMetric, Alert],
         synchronize: true,
-      })
+      }),
     }),
     DeviceModule,
     MotorMetricModule,
