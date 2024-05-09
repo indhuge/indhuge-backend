@@ -30,6 +30,7 @@ jobs:
     steps:
     - name: Connect to EC2
       run: |
+        echo "$DOT_ENV" > .env
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
         scp -o StrictHostKeyChecking=no -i private_key .env ubuntu@${EC2_PUBLIC_IP}:indhuge-backend/prod/.env
         ssh -o StrictHostKeyChecking=no -i private_key ubuntu@${EC2_PUBLIC_IP} '
