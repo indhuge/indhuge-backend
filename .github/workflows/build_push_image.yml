@@ -16,7 +16,12 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build
+        env:
+          DOT_ENV: ${{ secrets.DOT_ENV }}
+          DOT_ENV_PROD: ${{ secrets.DOT_ENV_PROD }}
         run: |
+          echo "$DOT_ENV" > .env
+          echo "$DOT_ENV_PROD" > .env.prod
           docker-compose build
 
       - name: Deploy
