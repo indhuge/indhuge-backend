@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@hmg
+        uses: actions/checkout@main
 
       - name: Setup Docker credentials
         run: |
