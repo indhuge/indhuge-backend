@@ -26,7 +26,7 @@ import { Alert } from './alert/entities/alert.entity';
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         host: config.get('POSTGRES_HOST'),
-        username: config.get('POSTGRES_USERNAME'),
+        username: config.get('POSTGRES_USER'),
         password: config.get('POSTGRES_PASSWORD'),
         database: config.get('POSTGRES_DB'),
         entities: [Device, MotorMetric, Alert],
