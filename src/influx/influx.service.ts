@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InfluxDB, Point } from '@influxdata/influxdb-client';
 // import { InfluxDB } from 'influx';
-import { write } from 'fs';
-import { Observable, Observer, of, timestamp } from 'rxjs';
 import { IQueryConfig, filterGetAllMetrics } from './dto/IQueryConfig.dto';
 import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
 import { Tools } from 'src/tools';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class InfluxService {
@@ -19,21 +18,22 @@ export class InfluxService {
   };
 
   private client: InfluxDB;
-  org = 'indhuge';
-  bucket = 'indhuge-poc';
+  private org;
+  private bucket;
 
-  constructor() {
-    const token = process.env.INFLUXDB_TOKEN;
-    const url = process.env.INFLUXDB_URL;
+  constructor(@Inject(ConfigService) config: ConfigService) {
+    const token = config.get('INFLUXDB_TOKEN');
+    const url = config.get('INFLUXDB_URL');
     this.client = new InfluxDB({ url, token });
+    this.org = config.get('INFLUXDB_ORG');
+    this.bucket = config.get('INFLUXDB_BUCKET');
   }
 
-
   runTest() {
-    let writeclient = this.client.getWriteApi(this.org, this.bucket, 'ns');
+    const writeclient = this.client.getWriteApi(this.org, this.bucket, 'ns');
     for (let i = 0; i < 10; i++) {
       setTimeout(() => {
-        let point = new Point('motor_a')
+        const point = new Point('motor_a')
           .tag('data_type', 'device_metric')
           .tag('type', 'motor')
           .intField('rpm', i * 50)
@@ -45,8 +45,8 @@ export class InfluxService {
   }
 
   private _insert(data: IDeviceMessage) {
-    let writeclient = this.client.getWriteApi(this.org, this.bucket, 'ms');
-    let point = new Point(data.device_id)
+    const writeclient = this.client.getWriteApi(this.org, this.bucket, 'ms');
+    const point = new Point(data.device_id)
       .tag('data_type', 'device_metric')
       .tag('type', data.type);
     Object.keys(data).forEach((e) => {
@@ -67,7 +67,7 @@ export class InfluxService {
   }
 
   async runQuery(config: IQueryConfig) {
-    let fluxQuery = `from(bucket: "indhuge-poc")
+    const fluxQuery = `from(bucket: "${this.bucket}")
   |> range(start: ${config.range.start}, stop:${config.range.stop == 'now' ? config.range.stop + '()' : config.range.stop})
   ${
     config.filter?.map(
@@ -87,7 +87,7 @@ export class InfluxService {
         type: o.type,
       };
     });
-    let processed = config.postGroupBy
+    const processed = config.postGroupBy
       ? Tools.GroupByAsList(config.postGroupBy, procData)
       : null;
     return processed ?? procData;
