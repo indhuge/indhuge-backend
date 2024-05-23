@@ -6,14 +6,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeviceService } from 'src/device/device.service';
 import { MetricTypeDef } from 'src/interface/MetricTypeDef';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
-import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
+import { IDeviceMessageDto } from 'src/interface/IDeviceMessage.dto';
 
 @Injectable()
 export class MotorMetricService {
   constructor(
     @InjectRepository(MotorMetric)
     private motorRepository: Repository<MotorMetric>,
-    @Inject(DeviceService)
+    @Inject('DeviceService')
     private readonly deviceService: DeviceService,
   ) {}
 
@@ -36,9 +36,9 @@ export class MotorMetricService {
   async createAll(createMetricDtos: CreateMotorMetricDTO[]) {
     const dvs = await this.deviceService.findAll();
     const dvs_ids = dvs.map((e) => e.id);
-    const invalidMetricIndex : number[] = [];
+    const invalidMetricIndex: number[] = [];
     createMetricDtos.forEach((e, i) => {
-      if (dvs_ids.indexOf(e.device_id) == -1){
+      if (dvs_ids.indexOf(e.device_id) == -1) {
         // throw new HttpException(`Invalid device_id ${e.device_id}`, HttpStatus.BAD_REQUEST);
         console.log(`Invalid device_id ${e.device_id}: ignoring object`);
         invalidMetricIndex.push(i);
@@ -46,7 +46,7 @@ export class MotorMetricService {
     });
     invalidMetricIndex.forEach((e) => {
       createMetricDtos.splice(e, 1);
-    })
+    });
 
     const mms: MotorMetric[] = createMetricDtos.map((e) => {
       return {
@@ -64,8 +64,11 @@ export class MotorMetricService {
     return this.motorRepository.findOne({ where: { id } });
   }
 
-  findByDeviceId(device_id : string) {
-    return this.motorRepository.find({relations : {device : true}, where : {device : {id : device_id}}})
+  findByDeviceId(device_id: string) {
+    return this.motorRepository.find({
+      relations: { device: true },
+      where: { device: { id: device_id } },
+    });
   }
 
   async getActualMetricAvg(deviceId: string) {
@@ -90,7 +93,7 @@ export class MotorMetricService {
       ])
       .groupBy('device_id')
       .getRawMany();
-    
-    return o as IDeviceMessage[];
+
+    return o as IDeviceMessageDto[];
   }
 }

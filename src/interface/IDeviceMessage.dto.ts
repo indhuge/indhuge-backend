@@ -1,7 +1,7 @@
 import { MetricTypeDef } from './MetricTypeDef';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class IDeviceMessage {
+export class IDeviceMessageDto {
   @ApiProperty()
   device_id: string;
   @ApiProperty()

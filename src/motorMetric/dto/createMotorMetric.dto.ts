@@ -1,11 +1,11 @@
-import { IDeviceMessage } from "src/interface/IDeviceMessage.dto";
+import { IDeviceMessageDto } from 'src/interface/IDeviceMessage.dto';
 
-export class CreateMotorMetricDTO implements IDeviceMessage {
+export class CreateMotorMetricDTO implements IDeviceMessageDto {
   device_id: string;
   type: 'motor';
   temperature: number;
   rpm: number;
   //alignment : number;
-  vibration : number;
-  timestamp : Date;
+  vibration: number;
+  timestamp: Date;
 }

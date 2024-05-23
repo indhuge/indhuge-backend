@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { MetricService } from './metric.service';
-import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
+import { IDeviceMessageDto } from 'src/interface/IDeviceMessage.dto';
 import { MotorMetric } from 'src/motorMetric/entities/motorMetric.entity';
 import { InfluxService } from 'src/influx/influx.service';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -11,12 +11,13 @@ import { IRequestResponse } from 'src/interface/IRequestResponse';
 export class MetricController {
   constructor(
     private readonly metricService: MetricService,
-    private readonly influxService: InfluxService,
   ) {}
 
   @Post()
-  @ApiBody({ type: Array<IDeviceMessage> })
-  create(@Body() createMetricDtos: IDeviceMessage[]) {
+  @ApiBody({
+    type: [IDeviceMessageDto],
+  })
+  create(@Body() createMetricDtos: IDeviceMessageDto[]) {
     //return this.influxService.insert(createMetricDtos);
     return this.metricService.insert(createMetricDtos);
   }

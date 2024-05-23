@@ -36,7 +36,7 @@ export class AlertService {
       text: text,
     });
 
-    return result;
+    return;
   }
 
   create(createAlertDto: CreateAlertDto) {
