@@ -13,6 +13,7 @@ import { MqttModule } from './mqtt/mqtt.module';
 import { InitModule } from './init/init.module';
 import { AlertModule } from './alert/alert.module';
 import { Alert } from './alert/entities/alert.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -33,14 +34,7 @@ import { Alert } from './alert/entities/alert.entity';
         synchronize: true,
       }),
     }),
-    DeviceModule,
-    MotorMetricModule,
-    MetricModule,
-    InfluxModule,
-    ScheduleModule.forRoot(),
-    SchedulerModule,
-    MqttModule,
-    AlertModule,
+    AuthModule
   ],
 })
 export class AppModule {}
