@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Socket } from 'dgram';
-import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
+import { IDeviceMessageDto } from 'src/interface/IDeviceMessage.dto';
 import { IRequestResponse } from 'src/interface/IRequestResponse';
-import { MetricTypeDef } from 'src/interface/MetricTypeDef';
+import { MetricTypeDef } from '../interface/MetricTypeDef';
 import { CreateMotorMetricDTO } from 'src/motorMetric/dto/createMotorMetric.dto';
-import { MotorMetricService } from 'src/motorMetric/motorMetric.service';
+import { MotorMetricService } from '../motorMetric/motorMetric.service';
 import { AlertService } from 'src/alert/alert.service';
 import { InfluxService } from 'src/influx/influx.service';
 
@@ -21,7 +21,7 @@ export class MetricService {
     private influxService: InfluxService,
   ) {}
 
-  create(data: IDeviceMessage) {
+  create(data: IDeviceMessageDto) {
     let result = null;
     switch (data.type) {
       case MetricTypeDef.motor:
@@ -32,7 +32,7 @@ export class MetricService {
     return result;
   }
 
-  createAll(data: IDeviceMessage[]) {
+  createAll(data: IDeviceMessageDto[]) {
     const motors = data.filter((e) => e.type == MetricTypeDef.motor);
 
     if (motors.length) {
@@ -79,9 +79,8 @@ export class MetricService {
     return response;
   }
 
-  async insert(data: Array<IDeviceMessage>) {
+  async insert(data: Array<IDeviceMessageDto>) {
     const alers = await this.alertService.findAll();
-
     alers.forEach((a) => {
       const device = data.find((d) => d.device_id == a.target);
       if (device) {

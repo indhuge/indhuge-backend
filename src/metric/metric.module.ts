@@ -5,6 +5,7 @@ import { MotorMetricModule } from 'src/motorMetric/motorMetric.module';
 import { MetricGateway } from './metric.gateway';
 import { InfluxModule } from 'src/influx/influx.module';
 import { AlertModule } from 'src/alert/alert.module';
+import { InfluxService } from 'src/influx/influx.service';
 
 @Module({
   imports: [MotorMetricModule, InfluxModule, AlertModule],

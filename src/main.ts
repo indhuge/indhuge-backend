@@ -21,9 +21,10 @@ async function bootstrap() {
     .setTitle('Ind[huge]')
     .setDescription('Ind[huge] data processing API')
     .setVersion('1.0')
-    .addTag('Metric', 'Manage device metrics')
-    .addTag('Device', 'Manage devices')
-    .addTag('Alert', 'Manage alerts')
+    // .addTag('Metric', 'Manage device metrics')
+    // .addTag('Device', 'Manage devices')
+    // .addTag('Alert', 'Manage alerts')
+    .addTag('Auth', 'Manage authentication')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

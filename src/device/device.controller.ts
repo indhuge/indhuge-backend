@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
 import { DeviceService } from './device.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
@@ -7,7 +7,9 @@ import {ApiTags} from "@nestjs/swagger";
 @ApiTags('Device')
 @Controller('device')
 export class DeviceController {
-  constructor(private readonly deviceService: DeviceService) {}
+  constructor(
+    @Inject('DeviceService')
+    private readonly deviceService: DeviceService) {}
 
   @Post()
   create(@Body() createDeviceDto: CreateDeviceDto) {
