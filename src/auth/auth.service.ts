@@ -99,4 +99,8 @@ export class AuthService {
       }
     }
   }
+
+  async test() {
+    return 'Hello World';
+  }
 }

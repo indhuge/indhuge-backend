@@ -36,4 +36,9 @@ export class AuthController {
     async refreshSession(@Body() body : RefreshTokensDTO) {
         return this.authService.refreshSession(body);
     }
+
+    @Post('test')
+    async test() {
+        return this.authService.test();
+    }
 }
