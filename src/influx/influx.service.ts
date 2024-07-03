@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InfluxDB, Point } from '@influxdata/influxdb-client';
 // import { InfluxDB } from 'influx';
 import { IQueryConfig, filterGetAllMetrics } from './dto/IQueryConfig.dto';
-import { IDeviceMessage } from 'src/interface/IDeviceMessage.dto';
+import { IDeviceMessageDto } from 'src/interface/IDeviceMessage.dto';
 import { Tools } from 'src/tools';
 import { ConfigService } from '@nestjs/config';
 
@@ -44,7 +44,7 @@ export class InfluxService {
     }
   }
 
-  private _insert(data: IDeviceMessage) {
+  private _insert(data: IDeviceMessageDto) {
     const writeclient = this.client.getWriteApi(this.org, this.bucket, 'ms');
     const point = new Point(data.device_id)
       .tag('data_type', 'device_metric')
@@ -58,7 +58,7 @@ export class InfluxService {
     return point;
   }
 
-  insert(data: IDeviceMessage | Array<IDeviceMessage>) {
+  insert(data: IDeviceMessageDto | Array<IDeviceMessageDto>) {
     if (data instanceof Array) {
       return data.map((e) => this._insert(e));
     }

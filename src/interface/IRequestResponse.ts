@@ -1,10 +1,10 @@
-import { IDeviceMessage } from "./IDeviceMessage.dto";
-import { ApiProperty } from "@nestjs/swagger";
+import { IDeviceMessageDto } from './IDeviceMessage.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class IRequestResponse {
-    @ApiProperty()
-    timestamp: string;
+  @ApiProperty()
+  timestamp: string;
 
-    @ApiProperty()
-    items: IDeviceMessage[];
+  @ApiProperty()
+  items: IDeviceMessageDto[];
 }
