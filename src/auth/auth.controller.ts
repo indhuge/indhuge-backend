@@ -38,7 +38,7 @@ export class AuthController {
     }
 
     @Post('test')
-    async test() {
+    async test(@Body() body : {sub : String}) {
         return this.authService.test();
     }
 }

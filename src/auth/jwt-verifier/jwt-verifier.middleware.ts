@@ -5,6 +5,13 @@ import { NextFunction, Request, Response } from 'express';
 @Injectable()
 export class JwtVerifierMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
+
+    const inputSub = req.body.sub;
+
+    if(!inputSub) {
+      throw new HttpException('User sub missing', HttpStatus.BAD_REQUEST);
+    }
+
     const authorization = req.headers.authorization || '';
     if(!authorization) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
@@ -23,6 +30,10 @@ export class JwtVerifierMiddleware implements NestMiddleware {
         username: decoded.username,
         scope : decoded.scope
       }
+      if(resp.id !== inputSub) {
+        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      }
+      
     }catch(err) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
